@@ -5,6 +5,7 @@ const { validationResult } = require('express-validator');
 
 // GET /api/articles
 const getArticles = async (req, res) => {
+  console.log('📚 Getting articles');
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
@@ -14,8 +15,11 @@ const getArticles = async (req, res) => {
       .sort({ publishedAt: -1 })
       .skip(skip)
       .limit(limit);
+    
+    console.log(`✅ Found ${articles.length} published articles`);
     res.json(articles);
   } catch (error) {
+    console.error('❌ Get articles error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };

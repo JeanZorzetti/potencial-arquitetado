@@ -86,65 +86,115 @@ const getAllArticles = async (req, res) => {
 
 // POST /api/articles
 const createArticle = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+  console.log('📝 Creating article:', { body: req.body, user: req.user });
+  
+  const { title, content, excerpt, featuredImage, category, status, isFeatured } = req.body;
+
+  // Basic validation
+  if (!title || !content || !excerpt || !category) {
+    console.log('❌ Missing required fields');
+    return res.status(400).json({ error: 'Title, content, excerpt and category are required' });
   }
 
-  const { title, content, excerpt, featuredImage, category, status, publishedAt } = req.body;
-
   try {
-    const slug = title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+    // Generate slug
+    const slug = title
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
 
-    const newArticle = new Article({
+    console.log('🔗 Generated slug:', slug);
+
+    const articleData = {
       title,
       slug,
       content,
       excerpt,
-      featuredImage,
+      featuredImage: featuredImage || '',
       category,
-      status,
-      publishedAt,
+      status: status || 'draft',
+      isFeatured: isFeatured || false,
       author: req.user.id,
-    });
+    };
 
+    if (status === 'published') {
+      articleData.publishedAt = new Date();
+    }
+
+    console.log('💾 Saving article data:', articleData);
+
+    const newArticle = new Article(articleData);
     const article = await newArticle.save();
+    
+    console.log('✅ Article saved successfully:', article._id);
     res.status(201).json(article);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    console.error('❌ Create article error:', error);
+    res.status(500).json({ error: 'Server error', details: error.message });
   }
 };
 
 // PUT /api/articles/:id
 const updateArticle = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+  console.log('✏️ Updating article:', { id: req.params.id, body: req.body });
 
-  const { title, content, excerpt, featuredImage, category, status, publishedAt } = req.body;
+  const { title, content, excerpt, featuredImage, category, status, isFeatured } = req.body;
 
   try {
     let article = await Article.findById(req.params.id);
     if (!article) {
+      console.log('❌ Article not found:', req.params.id);
       return res.status(404).json({ error: 'Article not found' });
     }
 
+    console.log('📄 Found article:', article.title);
+
     // Update slug if title changes
     let slug = article.slug;
-    if (title) {
-      slug = title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+    if (title && title !== article.title) {
+      slug = title
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim();
+      console.log('🔗 Updated slug:', slug);
     }
+
+    const updateData = {
+      title: title || article.title,
+      slug,
+      content: content || article.content,
+      excerpt: excerpt || article.excerpt,
+      featuredImage: featuredImage !== undefined ? featuredImage : article.featuredImage,
+      category: category || article.category,
+      status: status || article.status,
+      isFeatured: isFeatured !== undefined ? isFeatured : article.isFeatured,
+    };
+
+    if (status === 'published' && !article.publishedAt) {
+      updateData.publishedAt = new Date();
+    }
+
+    console.log('💾 Update data:', updateData);
 
     const updatedArticle = await Article.findByIdAndUpdate(
       req.params.id,
-      { $set: { title, slug, content, excerpt, featuredImage, category, status, publishedAt } },
+      { $set: updateData },
       { new: true }
     );
 
+    console.log('✅ Article updated successfully');
     res.json(updatedArticle);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    console.error('❌ Update article error:', error);
+    res.status(500).json({ error: 'Server error', details: error.message });
   }
 };
 

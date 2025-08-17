@@ -3,13 +3,20 @@ import Footer from "@/components/Footer";
 import ArticleCard from "@/components/ArticleCard";
 import CTABox from "@/components/CTABox";
 import { Button } from "@/components/ui/button";
-import { articles } from "@/data/articles";
+import { getArticles } from "@/services/api";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, BookOpen, Users, TrendingUp, Target } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const navigate = useNavigate();
-  const featuredArticles = articles.slice(0, 3);
+  
+  const { data: articles = [] } = useQuery({
+    queryKey: ["articles"],
+    queryFn: getArticles,
+  });
+  
+  const featuredArticles = articles.filter((article: any) => article.isFeatured).slice(0, 3);
 
   return (
     <div className="min-h-screen bg-background">
