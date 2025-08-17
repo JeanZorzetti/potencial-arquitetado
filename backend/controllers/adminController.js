@@ -26,8 +26,12 @@ const login = async (req, res) => {
     }
     
     console.log('✅ User found:', user.email);
+    console.log('🔐 Stored hash:', user.password);
+    console.log('🔑 Testing password:', password);
 
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log('🧪 Password comparison result:', isMatch);
+    
     if (!isMatch) {
       console.log('❌ Password mismatch');
       return res.status(400).json({ error: 'Invalid credentials' });

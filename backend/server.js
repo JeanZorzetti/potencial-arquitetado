@@ -20,22 +20,32 @@ const initializeApp = async () => {
     console.log('🔍 Checking for admin user...');
     const adminExists = await User.findOne({ email: 'admin@example.com' });
     
-    if (!adminExists) {
-      console.log('👤 Creating default admin user...');
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash('password123', salt);
-      const newUser = new User({
-        name: 'Admin',
-        email: 'admin@example.com',
-        password: hashedPassword,
-      });
-      await newUser.save();
-      console.log('✅ Admin user created successfully!');
-      console.log('📧 Email: admin@example.com');
-      console.log('🔑 Password: password123');
-    } else {
-      console.log('✅ Admin user already exists');
+    if (adminExists) {
+      console.log('🔄 Removing existing admin user to recreate...');
+      await User.deleteOne({ email: 'admin@example.com' });
     }
+    
+    console.log('👤 Creating fresh admin user...');
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash('password123', salt);
+    
+    // Log do hash para debug
+    console.log('🔐 Generated hash for password123:', hashedPassword);
+    
+    const newUser = new User({
+      name: 'Admin',
+      email: 'admin@example.com',
+      password: hashedPassword,
+    });
+    
+    await newUser.save();
+    console.log('✅ Fresh admin user created successfully!');
+    console.log('📧 Email: admin@example.com');
+    console.log('🔑 Password: password123');
+    
+    // Testar o hash imediatamente
+    const testMatch = await bcrypt.compare('password123', hashedPassword);
+    console.log('🧪 Hash test result:', testMatch);
   } catch (error) {
     console.error('❌ App initialization failed:', error);
   }
