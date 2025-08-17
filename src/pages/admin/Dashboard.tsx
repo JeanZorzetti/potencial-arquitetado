@@ -42,41 +42,37 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      // Simular dados por enquanto (depois conectar com API)
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setStats({
-        totalArticles: 6,
-        publishedArticles: 6,
-        draftArticles: 0,
-        totalSubscribers: 127,
-        totalMessages: 23,
-        unreadMessages: 5
-      });
+      const token = localStorage.getItem('token');
+      if (!token) return;
 
-      setRecentArticles([
-        {
-          _id: '1',
-          title: 'Como Desenvolver Inteligência Emocional em 30 Dias',
-          status: 'published',
-          publishedAt: '2024-01-15T10:00:00Z',
-          views: 1245
-        },
-        {
-          _id: '2', 
-          title: '5 Soft Skills Que Todo Líder Precisa Dominar',
-          status: 'published',
-          publishedAt: '2024-01-10T10:00:00Z',
-          views: 987
-        },
-        {
-          _id: '3',
-          title: 'Mentalidade de Crescimento: Como Transformar Desafios',
-          status: 'published', 
-          publishedAt: '2024-01-08T10:00:00Z',
-          views: 756
+      // Fetch articles
+      const articlesResponse = await fetch(`${import.meta.env.VITE_API_URL}/articles/all`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-      ] as any);
+      });
+      
+      if (articlesResponse.ok) {
+        const articles = await articlesResponse.json();
+        const publishedArticles = articles.filter((a: any) => a.status === 'published');
+        const draftArticles = articles.filter((a: any) => a.status === 'draft');
+        
+        setStats({
+          totalArticles: articles.length,
+          publishedArticles: publishedArticles.length,
+          draftArticles: draftArticles.length,
+          totalSubscribers: 0, // TODO: Implementar quando houver endpoint
+          totalMessages: 0,    // TODO: Implementar quando houver endpoint
+          unreadMessages: 0    // TODO: Implementar quando houver endpoint
+        });
+
+        // Show recent articles (limit to 3)
+        const recentArticles = articles
+          .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+          .slice(0, 3);
+        
+        setRecentArticles(recentArticles);
+      }
 
     } catch (error) {
       console.error('Erro ao carregar dados do dashboard:', error);
@@ -112,7 +108,7 @@ const Dashboard = () => {
     },
     {
       title: 'Visualizações',
-      value: '12.5k',
+      value: '0',
       description: 'Este mês',
       icon: TrendingUp,
       color: 'text-purple-600',
@@ -192,27 +188,41 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {recentArticles.map((article: any) => (
-                <div key={article._id} className="flex items-start justify-between p-3 border rounded-lg hover:bg-gray-50 transition-colors">
-                  <div className="flex-1">
-                    <h4 className="font-medium text-sm text-gray-900 mb-1">
-                      {article.title}
-                    </h4>
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <Calendar className="w-3 h-3" />
-                      {new Date(article.publishedAt).toLocaleDateString('pt-BR')}
-                      <Eye className="w-3 h-3 ml-2" />
-                      {article.views} visualizações
-                    </div>
-                  </div>
-                  <Badge 
-                    variant={article.status === 'published' ? 'default' : 'secondary'}
-                    className="ml-2"
-                  >
-                    {article.status === 'published' ? 'Publicado' : 'Rascunho'}
-                  </Badge>
+              {recentArticles.length === 0 ? (
+                <div className="text-center py-8">
+                  <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h4 className="font-medium text-gray-900 mb-2">Nenhum artigo ainda</h4>
+                  <p className="text-sm text-gray-500 mb-4">
+                    Comece criando seu primeiro artigo para ver aparecer aqui.
+                  </p>
+                  <Link to="/admin/articles/new">
+                    <Button size="sm">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Criar Primeiro Artigo
+                    </Button>
+                  </Link>
                 </div>
-              ))}
+              ) : (
+                recentArticles.map((article: any) => (
+                  <div key={article._id} className="flex items-start justify-between p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="flex-1">
+                      <h4 className="font-medium text-sm text-gray-900 mb-1">
+                        {article.title}
+                      </h4>
+                      <div className="flex items-center gap-2 text-xs text-gray-500">
+                        <Calendar className="w-3 h-3" />
+                        {new Date(article.publishedAt || article.createdAt).toLocaleDateString('pt-BR')}
+                      </div>
+                    </div>
+                    <Badge 
+                      variant={article.status === 'published' ? 'default' : 'secondary'}
+                      className="ml-2"
+                    >
+                      {article.status === 'published' ? 'Publicado' : 'Rascunho'}
+                    </Badge>
+                  </div>
+                ))
+              )}
             </div>
             <div className="mt-4">
               <Link to="/admin/articles">
@@ -244,7 +254,7 @@ const Dashboard = () => {
               <Link to="/admin/messages">
                 <Button variant="outline" className="w-full justify-start">
                   <Mail className="w-4 h-4 mr-2" />
-                  Ver Mensagens ({stats.unreadMessages} não lidas)
+                  Ver Mensagens {stats.unreadMessages > 0 && `(${stats.unreadMessages} não lidas)`}
                 </Button>
               </Link>
               

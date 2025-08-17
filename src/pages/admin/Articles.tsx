@@ -21,7 +21,6 @@ import {
 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { toast } from '@/hooks/use-toast';
-import { articles } from '@/data/articles';
 
 interface Article {
   _id: string;
@@ -65,17 +64,20 @@ const Articles = () => {
   const loadArticles = async () => {
     setIsLoading(true);
     try {
-      // Por enquanto, usar dados mockados
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${API_URL}/articles/all`, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       
-      // Aqui você faria a chamada real para a API
-      // const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-      // const response = await fetch(`${API_URL}/articles/all`, {
-      //   headers: { Authorization: `Bearer ${token}` }
-      // });
-      // const data = await response.json();
-      
-      setArticlesList(articles as Article[]);
+      if (response.ok) {
+        const data = await response.json();
+        setArticlesList(data);
+      } else {
+        throw new Error('Failed to fetch articles');
+      }
     } catch (error) {
       console.error('Erro ao carregar artigos:', error);
       toast({
@@ -83,6 +85,7 @@ const Articles = () => {
         description: "Não foi possível carregar os artigos.",
         variant: "destructive",
       });
+      setArticlesList([]);
     } finally {
       setIsLoading(false);
     }

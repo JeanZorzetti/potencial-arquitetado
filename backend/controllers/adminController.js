@@ -295,6 +295,24 @@ const seedDatabase = async (req, res) => {
   }
 };
 
+// POST /api/clear - Clear all articles for production setup
+const clearAllArticles = async (req, res) => {
+  try {
+    console.log('🗑️ Clearing all articles for production setup');
+    
+    const result = await Article.deleteMany({});
+    console.log(`✅ Deleted ${result.deletedCount} articles`);
+    
+    res.json({
+      message: 'All articles cleared successfully',
+      deletedCount: result.deletedCount
+    });
+  } catch (error) {
+    console.error('❌ Clear articles error:', error);
+    res.status(500).json({ error: 'Failed to clear articles', details: error.message });
+  }
+};
+
 module.exports = {
   login,
   getAllArticles,
@@ -302,4 +320,5 @@ module.exports = {
   updateArticle,
   deleteArticle,
   seedDatabase,
+  clearAllArticles,
 };
