@@ -8,6 +8,7 @@ const {
   createArticle,
   updateArticle,
   deleteArticle,
+  seedDatabase,
 } = require('../controllers/adminController');
 
 console.log('🔧 Loading auth middleware...');
@@ -34,6 +35,10 @@ router.put('/articles/:id', authMiddleware, updateArticle);
 // DELETE /api/articles/:id
 console.log('📝 Registering route: DELETE /api/articles/:id');
 router.delete('/articles/:id', authMiddleware, deleteArticle);
+
+// POST /api/seed - Manual database seeding
+console.log('📝 Registering route: POST /api/seed');
+router.post('/seed', seedDatabase);
 
 console.log('✅ All admin routes registered successfully');
 module.exports = router;
