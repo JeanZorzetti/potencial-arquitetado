@@ -5,59 +5,90 @@ import CTABox from "@/components/CTABox";
 import ArticleCard from "@/components/ArticleCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { articles } from "@/data/articles";
-import { 
-  ArrowLeft, 
-  Calendar, 
-  Clock, 
-  Share2, 
-  Linkedin, 
+import { getArticle, getArticles } from "@/services/api";
+import { useQuery } from "@tanstack/react-query";
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  Linkedin,
   Mail,
-  MessageCircle 
+  MessageCircle,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Article = () => {
-  const { slug } = useParams();
-  const article = articles.find(a => a.slug === slug);
-  
-  const relatedArticles = articles
-    .filter(a => a.slug !== slug && a.category === article?.category)
-    .slice(0, 2);
+  const { slug } = useParams<{ slug: string }>();
+
+  const { data: article, isLoading, isError } = useQuery({
+    queryKey: ["article", slug],
+    queryFn: () => getArticle(slug!),
+    enabled: !!slug,
+  });
+
+  const { data: relatedArticles = [] } = useQuery({
+    queryKey: ["articles", { category: article?.category }],
+    queryFn: () => getArticles(), // This needs to be adjusted to fetch by category
+    enabled: !!article,
+  });
 
   const handleShare = (platform: string) => {
     const url = window.location.href;
     const title = article?.title || "";
-    
+
     let shareUrl = "";
     switch (platform) {
       case "linkedin":
-        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+          url
+        )}`;
         break;
       case "whatsapp":
-        shareUrl = `https://wa.me/?text=${encodeURIComponent(`${title} - ${url}`)}`;
+        shareUrl = `https://wa.me/?text=${encodeURIComponent(
+          `${title} - ${url}`
+        )}`;
         break;
       case "email":
-        shareUrl = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(`Confira este artigo: ${url}`)}`;
+        shareUrl = `mailto:?subject=${encodeURIComponent(
+          title
+        )}&body=${encodeURIComponent(`Confira este artigo: ${url}`)}`;
         break;
     }
-    
+
     if (shareUrl) {
-      window.open(shareUrl, '_blank', 'width=600,height=400');
+      window.open(shareUrl, "_blank", "width=600,height=400");
     }
-    
+
     toast({
       title: "Link copiado!",
       description: "O link do artigo foi copiado para sua área de transferência.",
     });
   };
 
-  if (!article) {
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="max-w-4xl mx-auto px-6 py-20">
+            <Skeleton className="h-8 w-1/4 mb-4" />
+            <Skeleton className="h-12 w-3/4 mb-6" />
+            <Skeleton className="h-6 w-1/2 mb-8" />
+            <Skeleton className="h-96 w-full" />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (isError || !article) {
     return (
       <div className="min-h-screen bg-background">
         <Navigation />
         <div className="max-w-4xl mx-auto px-6 py-20 text-center">
-          <h1 className="text-3xl font-bold text-foreground mb-4">Artigo não encontrado</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-4">
+            Artigo não encontrado
+          </h1>
           <p className="text-muted-foreground mb-8">
             O artigo que você está procurando não existe ou foi removido.
           </p>
@@ -73,17 +104,21 @@ const Article = () => {
     );
   }
 
+  const filteredRelatedArticles = relatedArticles
+    .filter((a: any) => a.slug !== slug && a.category === article?.category)
+    .slice(0, 2);
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      
+
       {/* Article Header */}
       <article className="py-12">
         <div className="article-content">
           {/* Breadcrumb */}
           <div className="mb-8">
-            <Link 
-              to="/blog" 
+            <Link
+              to="/blog"
               className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -102,7 +137,7 @@ const Article = () => {
             <div className="flex items-center text-muted-foreground space-x-6 mb-8">
               <div className="flex items-center">
                 <Calendar className="w-4 h-4 mr-2" />
-                <span className="text-sm">{article.publishDate}</span>
+                <span className="text-sm">{new Date(article.publishedAt).toLocaleDateString()}</span>
               </div>
               <div className="flex items-center">
                 <Clock className="w-4 h-4 mr-2" />
@@ -113,7 +148,9 @@ const Article = () => {
 
           {/* Share Buttons */}
           <div className="flex items-center space-x-4 mb-8 pb-8 border-b border-border">
-            <span className="text-sm font-medium text-muted-foreground">Compartilhar:</span>
+            <span className="text-sm font-medium text-muted-foreground">
+              Compartilhar:
+            </span>
             <Button
               variant="outline"
               size="sm"
@@ -134,20 +171,20 @@ const Article = () => {
               variant="outline"
               size="sm"
               onClick={() => handleShare("email")}
-            >
+>
               <Mail className="w-4 h-4" />
             </Button>
           </div>
 
           {/* Article Content */}
-          <div 
+          <div
             className="prose prose-lg max-w-none"
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
 
           {/* Middle CTA */}
           <div className="my-16">
-            <CTABox 
+            <CTABox
               title="Gostou deste artigo? Acelere sua carreira!"
               description="Receba frameworks exclusivos e estratégias avançadas que não compartilhamos no blog. Conteúdo premium para profissionais que querem resultados rápidos."
               buttonText="Quero Conteúdo Exclusivo"
@@ -156,7 +193,9 @@ const Article = () => {
 
           {/* Share Buttons Bottom */}
           <div className="flex items-center justify-center space-x-4 my-12 py-8 border-t border-b border-border">
-            <span className="text-sm font-medium text-muted-foreground">Achou útil? Compartilhe:</span>
+            <span className="text-sm font-medium text-muted-foreground">
+              Achou útil? Compartilhe:
+            </span>
             <Button
               variant="outline"
               onClick={() => handleShare("linkedin")}
@@ -185,15 +224,15 @@ const Article = () => {
       </article>
 
       {/* Related Articles */}
-      {relatedArticles.length > 0 && (
+      {filteredRelatedArticles.length > 0 && (
         <section className="py-16 bg-muted/30">
           <div className="max-w-6xl mx-auto px-6">
             <h2 className="text-2xl md:text-3xl font-sans font-bold text-foreground mb-8 text-center">
               Artigos Relacionados
             </h2>
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {relatedArticles.map((relatedArticle) => (
-                <ArticleCard key={relatedArticle.id} {...relatedArticle} />
+              {filteredRelatedArticles.map((relatedArticle: any) => (
+                <ArticleCard key={relatedArticle._id} {...relatedArticle} />
               ))}
             </div>
             <div className="text-center mt-12">
@@ -210,7 +249,7 @@ const Article = () => {
       {/* Final CTA */}
       <section className="py-16">
         <div className="max-w-4xl mx-auto px-6">
-          <CTABox 
+          <CTABox
             title="Pronto para Implementar estes Conceitos?"
             description="Junte-se a mais de 1.000 profissionais que aplicam nossos frameworks para acelerar suas carreiras. Receba um guia prático para implementar tudo que você aprendeu."
             buttonText="Quero Acelerar Minha Carreira"
