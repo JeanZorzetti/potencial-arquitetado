@@ -8,7 +8,36 @@ const adminRoutes = require('./routes/adminRoutes');
 
 dotenv.config();
 
-connectDB();
+// Initialize database and create admin user if needed
+const initializeApp = async () => {
+  try {
+    await connectDB();
+    
+    // Auto-create admin user in production
+    if (process.env.NODE_ENV === 'production') {
+      const bcrypt = require('bcryptjs');
+      const User = require('./models/User');
+      
+      const adminExists = await User.findOne({ email: 'admin@example.com' });
+      if (!adminExists) {
+        console.log('👤 Creating default admin user...');
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash('password123', salt);
+        const newUser = new User({
+          name: 'Admin',
+          email: 'admin@example.com',
+          password: hashedPassword,
+        });
+        await newUser.save();
+        console.log('✅ Admin user created successfully!');
+      }
+    }
+  } catch (error) {
+    console.error('❌ App initialization failed:', error);
+  }
+};
+
+initializeApp();
 
 const app = express();
 

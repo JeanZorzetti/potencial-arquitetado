@@ -27,7 +27,14 @@ const login = async (req, res) => {
     const payload = { id: user.id };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    res.json({ token });
+    res.json({ 
+      token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email
+      }
+    });
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
   }
@@ -115,7 +122,7 @@ const deleteArticle = async (req, res) => {
       return res.status(404).json({ error: 'Article not found' });
     }
 
-    await article.remove();
+    await Article.findByIdAndDelete(req.params.id);
 
     res.json({ message: 'Article removed' });
   } catch (error) {
