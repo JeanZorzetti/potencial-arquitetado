@@ -26,16 +26,29 @@ const initializeApp = async () => {
     }
     
     console.log('👤 Creating fresh admin user...');
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash('password123', salt);
     
-    // Log do hash para debug
-    console.log('🔐 Generated hash for password123:', hashedPassword);
+    // Tentar diferentes approaches para o hash
+    const hashedPassword1 = await bcrypt.hash('password123', 10);
+    const hashedPassword2 = await bcrypt.hash('password123', await bcrypt.genSalt(10));
+    
+    console.log('🔐 Method 1 hash:', hashedPassword1);
+    console.log('🔐 Method 2 hash:', hashedPassword2);
+    
+    // Testar ambos os hashes
+    const test1 = await bcrypt.compare('password123', hashedPassword1);
+    const test2 = await bcrypt.compare('password123', hashedPassword2);
+    
+    console.log('🧪 Method 1 test:', test1);
+    console.log('🧪 Method 2 test:', test2);
+    
+    // Usar o método que funcionar
+    const finalHash = test1 ? hashedPassword1 : hashedPassword2;
+    console.log('🎯 Using hash:', finalHash);
     
     const newUser = new User({
       name: 'Admin',
       email: 'admin@example.com',
-      password: hashedPassword,
+      password: finalHash,
     });
     
     await newUser.save();
@@ -43,9 +56,10 @@ const initializeApp = async () => {
     console.log('📧 Email: admin@example.com');
     console.log('🔑 Password: password123');
     
-    // Testar o hash imediatamente
-    const testMatch = await bcrypt.compare('password123', hashedPassword);
-    console.log('🧪 Hash test result:', testMatch);
+    // Teste final após salvar
+    const savedUser = await User.findOne({ email: 'admin@example.com' });
+    const finalTest = await bcrypt.compare('password123', savedUser.password);
+    console.log('🧪 Final test with saved user:', finalTest);
   } catch (error) {
     console.error('❌ App initialization failed:', error);
   }
