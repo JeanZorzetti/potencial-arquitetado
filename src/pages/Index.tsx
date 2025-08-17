@@ -97,17 +97,37 @@ const Index = () => {
               profissional e pessoal.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredArticles.map((article) => (
-              <ArticleCard key={article.id} {...article} />
-            ))}
-          </div>
-          <div className="text-center mt-12">
-            <Button variant="outline" size="lg">
-              Ver Todos os Artigos
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </div>
+          {featuredArticles.length > 0 ? (
+            <>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {featuredArticles.map((article) => (
+                  <ArticleCard key={article.id} {...article} />
+                ))}
+              </div>
+              <div className="text-center mt-12">
+                <Button variant="outline" size="lg" onClick={() => navigate('/blog')}>
+                  Ver Todos os Artigos
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                <BookOpen className="w-8 h-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-xl font-sans font-semibold text-foreground mb-2">
+                Em breve, novos artigos
+              </h3>
+              <p className="text-muted-foreground mb-6">
+                Estamos trabalhando em conteúdo de alta qualidade para você.
+              </p>
+              <Button onClick={() => navigate('/blog')}>
+                Explorar Blog
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </div>
+          )}
         </div>
       </section>
 
