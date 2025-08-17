@@ -13,24 +13,28 @@ const initializeApp = async () => {
   try {
     await connectDB();
     
-    // Auto-create admin user in production
-    if (process.env.NODE_ENV === 'production') {
-      const bcrypt = require('bcryptjs');
-      const User = require('./models/User');
-      
-      const adminExists = await User.findOne({ email: 'admin@example.com' });
-      if (!adminExists) {
-        console.log('👤 Creating default admin user...');
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash('password123', salt);
-        const newUser = new User({
-          name: 'Admin',
-          email: 'admin@example.com',
-          password: hashedPassword,
-        });
-        await newUser.save();
-        console.log('✅ Admin user created successfully!');
-      }
+    // Auto-create admin user
+    const bcrypt = require('bcryptjs');
+    const User = require('./models/User');
+    
+    console.log('🔍 Checking for admin user...');
+    const adminExists = await User.findOne({ email: 'admin@example.com' });
+    
+    if (!adminExists) {
+      console.log('👤 Creating default admin user...');
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash('password123', salt);
+      const newUser = new User({
+        name: 'Admin',
+        email: 'admin@example.com',
+        password: hashedPassword,
+      });
+      await newUser.save();
+      console.log('✅ Admin user created successfully!');
+      console.log('📧 Email: admin@example.com');
+      console.log('🔑 Password: password123');
+    } else {
+      console.log('✅ Admin user already exists');
     }
   } catch (error) {
     console.error('❌ App initialization failed:', error);

@@ -6,26 +6,39 @@ const { validationResult } = require('express-validator');
 
 // POST /api/auth/login
 const login = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+  console.log('🔐 Login attempt:', { body: req.body });
+  
+  const { email, password } = req.body;
+  
+  // Basic validation
+  if (!email || !password) {
+    console.log('❌ Missing email or password');
+    return res.status(400).json({ error: 'Email and password are required' });
   }
 
-  const { email, password } = req.body;
-
   try {
+    console.log('🔍 Looking for user with email:', email);
     const user = await User.findOne({ email });
+    
     if (!user) {
+      console.log('❌ User not found');
       return res.status(400).json({ error: 'Invalid credentials' });
     }
+    
+    console.log('✅ User found:', user.email);
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      console.log('❌ Password mismatch');
       return res.status(400).json({ error: 'Invalid credentials' });
     }
+    
+    console.log('✅ Password match');
 
     const payload = { id: user.id };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+    
+    console.log('✅ Login successful');
 
     res.json({ 
       token,
@@ -36,6 +49,7 @@ const login = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('❌ Login error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
