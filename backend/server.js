@@ -74,8 +74,13 @@ app.get('/', (req, res) => {
 });
 
 // API routes
+console.log('🔧 Loading public routes...');
 app.use('/api', publicRoutes);
+
+console.log('🔧 Loading admin routes...');
 app.use('/api', adminRoutes);
+
+console.log('✅ All routes loaded successfully');
 
 // Global error handler
 app.use((err, req, res, next) => {
@@ -88,9 +93,40 @@ app.use((err, req, res, next) => {
 
 // 404 handler
 app.use('*', (req, res) => {
+  console.log(`❌ Route not found: ${req.method} ${req.originalUrl}`);
+  
+  // List all registered routes for debugging
+  const routes = [];
+  app._router.stack.forEach((middleware) => {
+    if (middleware.route) {
+      routes.push(`${Object.keys(middleware.route.methods)[0].toUpperCase()} ${middleware.route.path}`);
+    } else if (middleware.name === 'router') {
+      middleware.handle.stack.forEach((handler) => {
+        if (handler.route) {
+          const prefix = middleware.regexp.source.replace(/\$.*/, '').replace(/^\^\\?/, '').replace(/\\\//g, '/');
+          routes.push(`${Object.keys(handler.route.methods)[0].toUpperCase()} ${prefix}${handler.route.path}`);
+        }
+      });
+    }
+  });
+
   res.status(404).json({
     message: 'Route not found',
-    availableRoutes: ['/api/articles', '/api/newsletter/subscribe', '/api/contact']
+    requestedUrl: req.originalUrl,
+    method: req.method,
+    availableRoutes: routes.length > 0 ? routes : [
+      'GET /health',
+      'GET /',
+      'GET /api/articles',
+      'GET /api/articles/:slug', 
+      'POST /api/newsletter/subscribe',
+      'POST /api/contact',
+      'POST /api/auth/login',
+      'GET /api/articles/all',
+      'POST /api/articles',
+      'PUT /api/articles/:id',
+      'DELETE /api/articles/:id'
+    ]
   });
 });
 

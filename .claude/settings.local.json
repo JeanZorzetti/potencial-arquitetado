@@ -5,7 +5,8 @@
       "Bash(npm install)",
       "Bash(git add:*)",
       "Bash(git push:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(git commit:*)"
     ],
     "defaultMode": "acceptEdits"
   }
