@@ -60,6 +60,48 @@ const initializeApp = async () => {
     const savedUser = await User.findOne({ email: 'admin@example.com' });
     const finalTest = await bcrypt.compare('password123', savedUser.password);
     console.log('🧪 Final test with saved user:', finalTest);
+    
+    // Seed artigos se não existirem
+    const Article = require('./models/Article');
+    const articleCount = await Article.countDocuments();
+    console.log('📊 Articles in database:', articleCount);
+    
+    if (articleCount === 0) {
+      console.log('📝 Creating sample articles...');
+      
+      const sampleArticles = [
+        {
+          title: 'Como Desenvolver Inteligência Emocional',
+          slug: 'como-desenvolver-inteligencia-emocional',
+          content: '<p>A inteligência emocional é fundamental para o sucesso profissional. Neste artigo, você vai aprender técnicas práticas para desenvolver essa habilidade essencial.</p>',
+          excerpt: 'Aprenda técnicas práticas para desenvolver inteligência emocional e acelerar sua carreira profissional.',
+          category: 'Desenvolvimento Pessoal',
+          status: 'published',
+          isFeatured: true,
+          publishedAt: new Date(),
+          author: savedUser._id
+        },
+        {
+          title: '5 Soft Skills Essenciais para Líderes',
+          slug: '5-soft-skills-essenciais-lideres',
+          content: '<p>Descubra as 5 soft skills mais importantes que todo líder deve dominar para ser mais eficaz.</p>',
+          excerpt: 'As 5 soft skills que diferenciam grandes líderes dos demais profissionais.',
+          category: 'Liderança',
+          status: 'published',
+          isFeatured: true,
+          publishedAt: new Date(),
+          author: savedUser._id
+        }
+      ];
+      
+      for (const articleData of sampleArticles) {
+        const article = new Article(articleData);
+        await article.save();
+        console.log('✅ Created article:', article.title);
+      }
+      
+      console.log('🎉 Sample articles created successfully!');
+    }
   } catch (error) {
     console.error('❌ App initialization failed:', error);
   }
