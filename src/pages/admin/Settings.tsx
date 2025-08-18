@@ -168,9 +168,17 @@ const Settings = () => {
   const loadSettings = async () => {
     try {
       const token = localStorage.getItem('token');
+      
+      // Try to load from localStorage first
+      const savedSettings = localStorage.getItem('blog-settings');
+      
       if (!token) {
-        // If no token, use default settings for development
-        setSettings(getDefaultSettings());
+        // If no token, use saved settings or defaults
+        if (savedSettings) {
+          setSettings(JSON.parse(savedSettings));
+        } else {
+          setSettings(getDefaultSettings());
+        }
         setIsLoading(false);
         return;
       }
@@ -186,14 +194,23 @@ const Settings = () => {
         const data = await response.json();
         setSettings(data);
       } else {
-        console.error('Failed to load settings, using defaults');
-        // Fallback to default settings if API fails
-        setSettings(getDefaultSettings());
+        console.error('Failed to load settings, using saved or defaults');
+        // Fallback to saved settings or defaults if API fails
+        if (savedSettings) {
+          setSettings(JSON.parse(savedSettings));
+        } else {
+          setSettings(getDefaultSettings());
+        }
       }
     } catch (error) {
       console.error('Error loading settings:', error);
-      // Fallback to default settings if API fails
-      setSettings(getDefaultSettings());
+      // Fallback to saved settings or defaults if API fails
+      const savedSettings = localStorage.getItem('blog-settings');
+      if (savedSettings) {
+        setSettings(JSON.parse(savedSettings));
+      } else {
+        setSettings(getDefaultSettings());
+      }
     } finally {
       setIsLoading(false);
     }
@@ -271,7 +288,17 @@ const Settings = () => {
     setIsSaving(true);
     try {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      
+      // If no token, save to localStorage as fallback
+      if (!token) {
+        localStorage.setItem('blog-settings', JSON.stringify(settings));
+        toast({
+          title: "Configurações salvas (localmente)",
+          description: "As configurações foram salvas no navegador.",
+        });
+        setIsSaving(false);
+        return;
+      }
 
       const response = await fetch(`${import.meta.env.VITE_API_URL}/settings`, {
         method: 'PUT',
@@ -288,13 +315,19 @@ const Settings = () => {
           description: "As configurações foram atualizadas com sucesso.",
         });
       } else {
-        throw new Error('Failed to save settings');
+        // Fallback to localStorage if API fails
+        localStorage.setItem('blog-settings', JSON.stringify(settings));
+        toast({
+          title: "Configurações salvas (localmente)",
+          description: "API não disponível. Configurações salvas no navegador.",
+        });
       }
     } catch (error) {
+      // Fallback to localStorage if API fails
+      localStorage.setItem('blog-settings', JSON.stringify(settings));
       toast({
-        title: "Erro",
-        description: "Não foi possível salvar as configurações.",
-        variant: "destructive",
+        title: "Configurações salvas (localmente)",
+        description: "API não disponível. Configurações salvas no navegador.",
       });
     } finally {
       setIsSaving(false);
@@ -308,7 +341,17 @@ const Settings = () => {
 
     try {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      
+      if (!token) {
+        // If no token, reset localStorage and use defaults
+        localStorage.removeItem('blog-settings');
+        setSettings(getDefaultSettings());
+        toast({
+          title: "Configurações restauradas",
+          description: "Todas as configurações foram restauradas para os valores padrão.",
+        });
+        return;
+      }
 
       const response = await fetch(`${import.meta.env.VITE_API_URL}/settings/reset`, {
         method: 'POST',
@@ -321,18 +364,28 @@ const Settings = () => {
       if (response.ok) {
         const data = await response.json();
         setSettings(data.settings);
+        // Also update localStorage
+        localStorage.setItem('blog-settings', JSON.stringify(data.settings));
         toast({
           title: "Configurações restauradas",
           description: "Todas as configurações foram restauradas para os valores padrão.",
         });
       } else {
-        throw new Error('Failed to reset settings');
+        // Fallback to local reset
+        localStorage.removeItem('blog-settings');
+        setSettings(getDefaultSettings());
+        toast({
+          title: "Configurações restauradas (localmente)",
+          description: "API não disponível. Configurações restauradas localmente.",
+        });
       }
     } catch (error) {
+      // Fallback to local reset
+      localStorage.removeItem('blog-settings');
+      setSettings(getDefaultSettings());
       toast({
-        title: "Erro",
-        description: "Não foi possível restaurar as configurações.",
-        variant: "destructive",
+        title: "Configurações restauradas (localmente)",
+        description: "API não disponível. Configurações restauradas localmente.",
       });
     }
   };
