@@ -89,6 +89,66 @@ interface BlogSettings {
   };
 }
 
+const getDefaultSettings = (): BlogSettings => ({
+  siteName: 'Arquitetura do Potencial',
+  tagline: 'Construindo carreiras extraordinárias através do desenvolvimento pessoal e profissional',
+  description: 'Blog focado em desenvolvimento pessoal, inteligência emocional, soft skills e liderança para profissionais que buscam excelência.',
+  adminEmail: 'admin@example.com',
+  contactEmail: '',
+  phone: '',
+  address: '',
+  socialLinks: {
+    linkedin: '',
+    twitter: '',
+    instagram: '',
+    facebook: '',
+    youtube: '',
+    github: ''
+  },
+  seo: {
+    metaTitle: '',
+    metaDescription: '',
+    keywords: '',
+    ogImage: '',
+    favicon: '',
+    googleAnalytics: '',
+    googleTagManager: ''
+  },
+  appearance: {
+    primaryColor: '#3B82F6',
+    secondaryColor: '#10B981',
+    logo: '',
+    favicon: '',
+    headerStyle: 'modern' as const,
+    footerText: ''
+  },
+  content: {
+    articlesPerPage: 6,
+    showExcerpts: true,
+    excerptLength: 150,
+    enableComments: false,
+    moderateComments: true,
+    allowGuestComments: false
+  },
+  newsletter: {
+    enabled: true,
+    welcomeSubject: 'Bem-vindo(a) ao Arquitetura do Potencial!',
+    welcomeMessage: 'Obrigado por se inscrever na nossa newsletter. Você receberá conteúdo exclusivo sobre desenvolvimento pessoal e profissional.',
+    mailProvider: 'local' as const,
+    apiKey: '',
+    fromEmail: '',
+    fromName: ''
+  },
+  security: {
+    enableCaptcha: false,
+    recaptchaSiteKey: '',
+    recaptchaSecretKey: '',
+    enableRateLimit: true,
+    maxLoginAttempts: 5,
+    sessionTimeout: 24
+  }
+});
+
 const Settings = () => {
   const [settings, setSettings] = useState<BlogSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -108,7 +168,12 @@ const Settings = () => {
   const loadSettings = async () => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      if (!token) {
+        // If no token, use default settings for development
+        setSettings(getDefaultSettings());
+        setIsLoading(false);
+        return;
+      }
 
       const response = await fetch(`${import.meta.env.VITE_API_URL}/settings`, {
         headers: {
@@ -121,10 +186,14 @@ const Settings = () => {
         const data = await response.json();
         setSettings(data);
       } else {
-        console.error('Failed to load settings');
+        console.error('Failed to load settings, using defaults');
+        // Fallback to default settings if API fails
+        setSettings(getDefaultSettings());
       }
     } catch (error) {
       console.error('Error loading settings:', error);
+      // Fallback to default settings if API fails
+      setSettings(getDefaultSettings());
     } finally {
       setIsLoading(false);
     }
@@ -133,7 +202,16 @@ const Settings = () => {
   const loadStats = async () => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      if (!token) {
+        // If no token, use mock stats for development
+        setStats({
+          totalArticles: 0,
+          totalSubscribers: 0,
+          totalMessages: 0,
+          lastBackup: null
+        });
+        return;
+      }
 
       const response = await fetch(`${import.meta.env.VITE_API_URL}/stats`, {
         headers: {
@@ -150,9 +228,24 @@ const Settings = () => {
           totalMessages: data.totalMessages,
           lastBackup: null
         });
+      } else {
+        // Fallback to mock stats if API fails
+        setStats({
+          totalArticles: 0,
+          totalSubscribers: 0,
+          totalMessages: 0,
+          lastBackup: null
+        });
       }
     } catch (error) {
       console.error('Error loading stats:', error);
+      // Fallback to mock stats if API fails
+      setStats({
+        totalArticles: 0,
+        totalSubscribers: 0,
+        totalMessages: 0,
+        lastBackup: null
+      });
     }
   };
 
