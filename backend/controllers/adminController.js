@@ -2,6 +2,7 @@ const Article = require('../models/Article');
 const User = require('../models/User');
 const Subscriber = require('../models/Subscriber');
 const ContactMessage = require('../models/ContactMessage');
+const Settings = require('../models/Settings');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
@@ -423,6 +424,108 @@ const getStats = async (req, res) => {
   }
 };
 
+// GET /api/settings - Get site settings
+const getSettings = async (req, res) => {
+  try {
+    console.log('⚙️ Getting site settings');
+    const settings = await Settings.getSettings();
+    console.log('✅ Settings retrieved');
+    res.json(settings);
+  } catch (error) {
+    console.error('❌ Get settings error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// PUT /api/settings - Update site settings
+const updateSettings = async (req, res) => {
+  try {
+    console.log('⚙️ Updating site settings:', req.body);
+    
+    // Validate input
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const settings = await Settings.updateSettings(req.body);
+    console.log('✅ Settings updated successfully');
+    
+    res.json({
+      message: 'Settings updated successfully',
+      settings
+    });
+  } catch (error) {
+    console.error('❌ Update settings error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// POST /api/settings/reset - Reset settings to default
+const resetSettings = async (req, res) => {
+  try {
+    console.log('🔄 Resetting settings to default');
+    
+    // Delete existing settings to trigger default creation
+    await Settings.deleteMany({});
+    const settings = await Settings.getSettings();
+    
+    console.log('✅ Settings reset to default');
+    res.json({
+      message: 'Settings reset to default successfully',
+      settings
+    });
+  } catch (error) {
+    console.error('❌ Reset settings error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// GET /api/settings/public - Get public settings (for frontend display)
+const getPublicSettings = async (req, res) => {
+  try {
+    console.log('🌐 Getting public settings');
+    const settings = await Settings.getSettings();
+    
+    // Return only public-safe settings
+    const publicSettings = {
+      siteName: settings.siteName,
+      tagline: settings.tagline,
+      description: settings.description,
+      contactEmail: settings.contactEmail,
+      phone: settings.phone,
+      address: settings.address,
+      socialLinks: settings.socialLinks,
+      seo: {
+        metaTitle: settings.seo.metaTitle,
+        metaDescription: settings.seo.metaDescription,
+        keywords: settings.seo.keywords,
+        ogImage: settings.seo.ogImage,
+        favicon: settings.seo.favicon,
+        googleAnalytics: settings.seo.googleAnalytics,
+        googleTagManager: settings.seo.googleTagManager
+      },
+      appearance: settings.appearance,
+      content: {
+        articlesPerPage: settings.content.articlesPerPage,
+        showExcerpts: settings.content.showExcerpts,
+        excerptLength: settings.content.excerptLength,
+        enableComments: settings.content.enableComments,
+        allowGuestComments: settings.content.allowGuestComments
+      },
+      newsletter: {
+        enabled: settings.newsletter.enabled
+      }
+    };
+    
+    console.log('✅ Public settings retrieved');
+    res.json(publicSettings);
+  } catch (error) {
+    console.error('❌ Get public settings error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
 module.exports = {
   login,
   getAllArticles,
@@ -437,4 +540,8 @@ module.exports = {
   markMessageAsRead,
   deleteMessage,
   getStats,
+  getSettings,
+  updateSettings,
+  resetSettings,
+  getPublicSettings,
 };

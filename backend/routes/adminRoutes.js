@@ -16,6 +16,10 @@ const {
   markMessageAsRead,
   deleteMessage,
   getStats,
+  getSettings,
+  updateSettings,
+  resetSettings,
+  getPublicSettings,
 } = require('../controllers/adminController');
 
 console.log('🔧 Loading auth middleware...');
@@ -74,6 +78,18 @@ router.put('/messages/:id/read', authMiddleware, markMessageAsRead);
 // DELETE /api/messages/:id - Delete message
 console.log('📝 Registering route: DELETE /api/messages/:id');
 router.delete('/messages/:id', authMiddleware, deleteMessage);
+
+// GET /api/settings - Get settings
+console.log('📝 Registering route: GET /api/settings');
+router.get('/settings', authMiddleware, getSettings);
+
+// PUT /api/settings - Update settings
+console.log('📝 Registering route: PUT /api/settings');
+router.put('/settings', authMiddleware, updateSettings);
+
+// POST /api/settings/reset - Reset settings
+console.log('📝 Registering route: POST /api/settings/reset');
+router.post('/settings/reset', authMiddleware, resetSettings);
 
 console.log('✅ All admin routes registered successfully');
 module.exports = router;

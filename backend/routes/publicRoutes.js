@@ -7,6 +7,7 @@ const {
   subscribeToNewsletter,
   createContactMessage,
 } = require('../controllers/publicController');
+const { getPublicSettings } = require('../controllers/adminController');
 
 // GET /api/articles
 router.get('/articles', getArticles);
@@ -22,5 +23,8 @@ router.post('/newsletter/subscribe', subscribeToNewsletter);
 
 // POST /api/contact
 router.post('/contact', createContactMessage);
+
+// GET /api/settings/public - Public settings
+router.get('/settings/public', getPublicSettings);
 
 module.exports = router;
