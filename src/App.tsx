@@ -4,8 +4,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
-import GoogleAnalytics from "@/components/GoogleAnalytics";
-import { usePublicSettings } from "@/hooks/usePublicSettings";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Blog from "./pages/Blog";
@@ -27,58 +25,43 @@ import Settings from "./pages/admin/Settings";
 
 const queryClient = new QueryClient();
 
-const AppContent = () => {
-  const { settings } = usePublicSettings();
-  
-  return (
-    <>
-      {/* Google Analytics Integration */}
-      {settings?.seo?.googleAnalytics && (
-        <GoogleAnalytics trackingId={settings.seo.googleAnalytics} />
-      )}
-      
-      <BrowserRouter>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Index />} />
-          <Route path="/sobre" element={<About />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<Article />} />
-          <Route path="/framework" element={<Framework />} />
-          <Route path="/contato" element={<Contact />} />
-          
-          {/* Admin Routes */}
-          <Route path="/admin/login" element={<Login />} />
-          <Route path="/admin/*" element={
-            <ProtectedRoute>
-              <AdminLayout />
-            </ProtectedRoute>
-          }>
-            <Route index element={<Dashboard />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="articles" element={<Articles />} />
-            <Route path="articles/new" element={<ArticleEditor />} />
-            <Route path="articles/:id" element={<ArticleEditor />} />
-            <Route path="messages" element={<Messages />} />
-            <Route path="subscribers" element={<Subscribers />} />
-            <Route path="settings" element={<Settings />} />
-          </Route>
-          
-          {/* 404 Route */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </>
-  );
-};
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <AppContent />
+        <BrowserRouter>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Index />} />
+            <Route path="/sobre" element={<About />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<Article />} />
+            <Route path="/framework" element={<Framework />} />
+            <Route path="/contato" element={<Contact />} />
+            
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={<Login />} />
+            <Route path="/admin/*" element={
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
+            }>
+              <Route index element={<Dashboard />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="articles" element={<Articles />} />
+              <Route path="articles/new" element={<ArticleEditor />} />
+              <Route path="articles/:id" element={<ArticleEditor />} />
+              <Route path="messages" element={<Messages />} />
+              <Route path="subscribers" element={<Subscribers />} />
+              <Route path="settings" element={<Settings />} />
+            </Route>
+            
+            {/* 404 Route */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
