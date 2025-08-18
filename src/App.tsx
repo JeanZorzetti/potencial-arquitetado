@@ -21,6 +21,7 @@ import Articles from "./pages/admin/Articles";
 import ArticleEditor from "./pages/admin/ArticleEditor";
 import Messages from "./pages/admin/Messages";
 import Subscribers from "./pages/admin/Subscribers";
+import Settings from "./pages/admin/Settings";
 
 const queryClient = new QueryClient();
 
@@ -54,7 +55,7 @@ const App = () => (
               <Route path="articles/:id" element={<ArticleEditor />} />
               <Route path="messages" element={<Messages />} />
               <Route path="subscribers" element={<Subscribers />} />
-              <Route path="settings" element={<div className="p-8 text-center text-gray-500">Em desenvolvimento...</div>} />
+              <Route path="settings" element={<Settings />} />
             </Route>
             
             {/* 404 Route */}

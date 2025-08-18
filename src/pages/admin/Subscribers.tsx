@@ -36,18 +36,23 @@ const Subscribers = () => {
   const loadSubscribers = async () => {
     setIsLoading(true);
     try {
-      // Simular dados
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const mockSubscribers: Subscriber[] = [
-        { _id: '1', email: 'joao@example.com', createdAt: '2024-01-20T10:30:00Z' },
-        { _id: '2', email: 'maria@example.com', createdAt: '2024-01-19T15:45:00Z' },
-        { _id: '3', email: 'pedro@example.com', createdAt: '2024-01-18T09:15:00Z' },
-        { _id: '4', email: 'ana@example.com', createdAt: '2024-01-17T14:20:00Z' },
-        { _id: '5', email: 'carlos@example.com', createdAt: '2024-01-16T11:35:00Z' },
-      ];
-      
-      setSubscribers(mockSubscribers);
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/subscribers`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSubscribers(data);
+      } else {
+        console.error('Failed to fetch subscribers');
+        setSubscribers([]);
+      }
     } catch (error) {
       console.error('Erro ao carregar subscribers:', error);
     } finally {

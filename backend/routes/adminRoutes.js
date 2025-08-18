@@ -10,6 +10,12 @@ const {
   deleteArticle,
   seedDatabase,
   clearAllArticles,
+  getAllSubscribers,
+  deleteSubscriber,
+  getAllMessages,
+  markMessageAsRead,
+  deleteMessage,
+  getStats,
 } = require('../controllers/adminController');
 
 console.log('🔧 Loading auth middleware...');
@@ -44,6 +50,30 @@ router.post('/seed', seedDatabase);
 // POST /api/clear - Clear all articles
 console.log('📝 Registering route: POST /api/clear');
 router.post('/clear', clearAllArticles);
+
+// GET /api/stats - Dashboard statistics
+console.log('📝 Registering route: GET /api/stats');
+router.get('/stats', authMiddleware, getStats);
+
+// GET /api/subscribers - Get all subscribers
+console.log('📝 Registering route: GET /api/subscribers');
+router.get('/subscribers', authMiddleware, getAllSubscribers);
+
+// DELETE /api/subscribers/:id - Delete subscriber
+console.log('📝 Registering route: DELETE /api/subscribers/:id');
+router.delete('/subscribers/:id', authMiddleware, deleteSubscriber);
+
+// GET /api/messages - Get all messages
+console.log('📝 Registering route: GET /api/messages');
+router.get('/messages', authMiddleware, getAllMessages);
+
+// PUT /api/messages/:id/read - Mark message as read
+console.log('📝 Registering route: PUT /api/messages/:id/read');
+router.put('/messages/:id/read', authMiddleware, markMessageAsRead);
+
+// DELETE /api/messages/:id - Delete message
+console.log('📝 Registering route: DELETE /api/messages/:id');
+router.delete('/messages/:id', authMiddleware, deleteMessage);
 
 console.log('✅ All admin routes registered successfully');
 module.exports = router;

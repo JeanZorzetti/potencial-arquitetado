@@ -31,37 +31,23 @@ const Messages = () => {
   const loadMessages = async () => {
     setIsLoading(true);
     try {
-      // Simular dados
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const mockMessages: ContactMessage[] = [
-        {
-          _id: '1',
-          name: 'João Silva',
-          email: 'joao@example.com',
-          message: 'Olá! Gostaria de saber mais sobre os frameworks de desenvolvimento pessoal. Vocês oferecem consultoria personalizada?',
-          isRead: false,
-          createdAt: '2024-01-20T10:30:00Z'
-        },
-        {
-          _id: '2',
-          name: 'Maria Santos',
-          email: 'maria@example.com',
-          message: 'Excelente artigo sobre inteligência emocional! Gostaria de receber mais conteúdo sobre o tema.',
-          isRead: true,
-          createdAt: '2024-01-19T15:45:00Z'
-        },
-        {
-          _id: '3',
-          name: 'Pedro Costa',
-          email: 'pedro@example.com',
-          message: 'Sou gestor de uma empresa de tecnologia e preciso desenvolver soft skills na minha equipe. Vocês têm algum programa corporativo?',
-          isRead: false,
-          createdAt: '2024-01-18T09:15:00Z'
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/messages`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
-      ];
-      
-      setMessages(mockMessages);
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setMessages(data);
+      } else {
+        console.error('Failed to fetch messages');
+        setMessages([]);
+      }
     } catch (error) {
       console.error('Erro ao carregar mensagens:', error);
     } finally {
@@ -69,10 +55,29 @@ const Messages = () => {
     }
   };
 
-  const markAsRead = (messageId: string) => {
-    setMessages(prev => prev.map(msg =>
-      msg._id === messageId ? { ...msg, isRead: true } : msg
-    ));
+  const markAsRead = async (messageId: string) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/messages/${messageId}/read`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        setMessages(prev => prev.map(msg =>
+          msg._id === messageId ? { ...msg, isRead: true } : msg
+        ));
+      } else {
+        console.error('Failed to mark message as read');
+      }
+    } catch (error) {
+      console.error('Error marking message as read:', error);
+    }
   };
 
   const unreadCount = messages.filter(msg => !msg.isRead).length;

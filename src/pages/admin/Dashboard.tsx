@@ -45,27 +45,23 @@ const Dashboard = () => {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      // Fetch articles
-      const articlesResponse = await fetch(`${import.meta.env.VITE_API_URL}/articles/all`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      // Fetch stats and articles in parallel
+      const [statsResponse, articlesResponse] = await Promise.all([
+        fetch(`${import.meta.env.VITE_API_URL}/stats`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        fetch(`${import.meta.env.VITE_API_URL}/articles/all`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+      ]);
       
+      if (statsResponse.ok) {
+        const statsData = await statsResponse.json();
+        setStats(statsData);
+      }
+
       if (articlesResponse.ok) {
         const articles = await articlesResponse.json();
-        const publishedArticles = articles.filter((a: any) => a.status === 'published');
-        const draftArticles = articles.filter((a: any) => a.status === 'draft');
-        
-        setStats({
-          totalArticles: articles.length,
-          publishedArticles: publishedArticles.length,
-          draftArticles: draftArticles.length,
-          totalSubscribers: 0, // TODO: Implementar quando houver endpoint
-          totalMessages: 0,    // TODO: Implementar quando houver endpoint
-          unreadMessages: 0    // TODO: Implementar quando houver endpoint
-        });
-
         // Show recent articles (limit to 3)
         const recentArticles = articles
           .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())

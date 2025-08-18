@@ -1,5 +1,7 @@
 const Article = require('../models/Article');
 const User = require('../models/User');
+const Subscriber = require('../models/Subscriber');
+const ContactMessage = require('../models/ContactMessage');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
@@ -313,6 +315,114 @@ const clearAllArticles = async (req, res) => {
   }
 };
 
+// GET /api/subscribers - Get all subscribers
+const getAllSubscribers = async (req, res) => {
+  try {
+    console.log('📬 Getting all subscribers');
+    const subscribers = await Subscriber.find().sort({ createdAt: -1 });
+    console.log(`✅ Found ${subscribers.length} subscribers`);
+    res.json(subscribers);
+  } catch (error) {
+    console.error('❌ Get subscribers error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// DELETE /api/subscribers/:id - Delete subscriber
+const deleteSubscriber = async (req, res) => {
+  try {
+    console.log('🗑️ Deleting subscriber:', req.params.id);
+    const subscriber = await Subscriber.findByIdAndDelete(req.params.id);
+    if (!subscriber) {
+      return res.status(404).json({ error: 'Subscriber not found' });
+    }
+    console.log('✅ Subscriber deleted');
+    res.json({ message: 'Subscriber deleted successfully' });
+  } catch (error) {
+    console.error('❌ Delete subscriber error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// GET /api/messages - Get all contact messages
+const getAllMessages = async (req, res) => {
+  try {
+    console.log('💬 Getting all messages');
+    const messages = await ContactMessage.find().sort({ createdAt: -1 });
+    console.log(`✅ Found ${messages.length} messages`);
+    res.json(messages);
+  } catch (error) {
+    console.error('❌ Get messages error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// PUT /api/messages/:id/read - Mark message as read
+const markMessageAsRead = async (req, res) => {
+  try {
+    console.log('📖 Marking message as read:', req.params.id);
+    const message = await ContactMessage.findByIdAndUpdate(
+      req.params.id,
+      { isRead: true },
+      { new: true }
+    );
+    if (!message) {
+      return res.status(404).json({ error: 'Message not found' });
+    }
+    console.log('✅ Message marked as read');
+    res.json(message);
+  } catch (error) {
+    console.error('❌ Mark message as read error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// DELETE /api/messages/:id - Delete message
+const deleteMessage = async (req, res) => {
+  try {
+    console.log('🗑️ Deleting message:', req.params.id);
+    const message = await ContactMessage.findByIdAndDelete(req.params.id);
+    if (!message) {
+      return res.status(404).json({ error: 'Message not found' });
+    }
+    console.log('✅ Message deleted');
+    res.json({ message: 'Message deleted successfully' });
+  } catch (error) {
+    console.error('❌ Delete message error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// GET /api/stats - Get dashboard statistics
+const getStats = async (req, res) => {
+  try {
+    console.log('📊 Getting dashboard stats');
+    const [articleCount, publishedCount, draftCount, subscriberCount, messageCount, unreadCount] = await Promise.all([
+      Article.countDocuments(),
+      Article.countDocuments({ status: 'published' }),
+      Article.countDocuments({ status: 'draft' }),
+      Subscriber.countDocuments(),
+      ContactMessage.countDocuments(),
+      ContactMessage.countDocuments({ isRead: false })
+    ]);
+
+    const stats = {
+      totalArticles: articleCount,
+      publishedArticles: publishedCount,
+      draftArticles: draftCount,
+      totalSubscribers: subscriberCount,
+      totalMessages: messageCount,
+      unreadMessages: unreadCount
+    };
+
+    console.log('✅ Stats retrieved:', stats);
+    res.json(stats);
+  } catch (error) {
+    console.error('❌ Get stats error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
 module.exports = {
   login,
   getAllArticles,
@@ -321,4 +431,10 @@ module.exports = {
   deleteArticle,
   seedDatabase,
   clearAllArticles,
+  getAllSubscribers,
+  deleteSubscriber,
+  getAllMessages,
+  markMessageAsRead,
+  deleteMessage,
+  getStats,
 };
