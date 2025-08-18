@@ -51,25 +51,78 @@ const getArticleBySlug = async (req, res) => {
 
 // POST /api/newsletter/subscribe
 const subscribeToNewsletter = async (req, res) => {
+  console.log('📧 Newsletter subscription attempt:', req.body);
+  
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log('❌ Validation errors:', errors.array());
     return res.status(400).json({ errors: errors.array() });
   }
 
   const { email } = req.body;
+  
+  if (!email) {
+    console.log('❌ No email provided');
+    return res.status(400).json({ error: 'Email is required' });
+  }
 
   try {
+    // Try MongoDB first
     let subscriber = await Subscriber.findOne({ email });
     if (subscriber) {
-      return res.status(400).json({ error: 'Email already subscribed' });
+      console.log('❌ Email already subscribed');
+      return res.status(400).json({ error: 'E-mail já está inscrito na newsletter' });
     }
 
     subscriber = new Subscriber({ email });
     await subscriber.save();
-
+    
+    console.log('✅ Subscriber saved to MongoDB:', email);
     res.status(201).json({ message: 'Successfully subscribed' });
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    console.error('❌ MongoDB error, trying fallback:', error.message);
+    
+    // Fallback: Save to local file
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const subscribersFile = path.join(__dirname, '..', 'data', 'subscribers.json');
+      
+      // Create data directory if it doesn't exist
+      const dataDir = path.dirname(subscribersFile);
+      if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+      }
+      
+      // Read existing subscribers
+      let subscribers = [];
+      if (fs.existsSync(subscribersFile)) {
+        const data = fs.readFileSync(subscribersFile, 'utf8');
+        subscribers = JSON.parse(data);
+      }
+      
+      // Check if email already exists
+      if (subscribers.some(sub => sub.email === email)) {
+        console.log('❌ Email already subscribed (fallback)');
+        return res.status(400).json({ error: 'E-mail já está inscrito na newsletter' });
+      }
+      
+      // Add new subscriber
+      subscribers.push({
+        email,
+        subscribedAt: new Date(),
+        active: true
+      });
+      
+      // Save to file
+      fs.writeFileSync(subscribersFile, JSON.stringify(subscribers, null, 2));
+      
+      console.log('✅ Subscriber saved to fallback file:', email);
+      res.status(201).json({ message: 'Successfully subscribed (saved locally)' });
+    } catch (fallbackError) {
+      console.error('❌ Fallback also failed:', fallbackError);
+      res.status(500).json({ error: 'Server error' });
+    }
   }
 };
 

@@ -6,10 +6,12 @@ const connectDB = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log('MongoDB connected');
+    console.log('✅ MongoDB connected');
+    return true;
   } catch (error) {
-    console.error('MongoDB connection error:', error);
-    process.exit(1);
+    console.error('❌ MongoDB connection error:', error.message);
+    console.log('🔄 Server will continue with fallback storage system');
+    return false;
   }
 };
 

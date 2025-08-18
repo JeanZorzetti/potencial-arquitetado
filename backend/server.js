@@ -11,14 +11,15 @@ dotenv.config();
 // Initialize database and create admin user if needed
 const initializeApp = async () => {
   try {
-    await connectDB();
+    const dbConnected = await connectDB();
     
-    // Auto-create admin user
-    const bcrypt = require('bcryptjs');
-    const User = require('./models/User');
-    
-    console.log('🔍 Checking for admin user...');
-    const adminExists = await User.findOne({ email: 'admin@example.com' });
+    if (dbConnected) {
+      // Auto-create admin user only if MongoDB is connected
+      const bcrypt = require('bcryptjs');
+      const User = require('./models/User');
+      
+      console.log('🔍 Checking for admin user...');
+      const adminExists = await User.findOne({ email: 'admin@example.com' });
     
     if (adminExists) {
       console.log('🔄 Removing existing admin user to recreate...');
@@ -101,6 +102,9 @@ const initializeApp = async () => {
       }
       
       console.log('🎉 Sample articles created successfully!');
+    }
+    } else {
+      console.log('⚠️ MongoDB not connected - Admin user and sample data creation skipped');
     }
   } catch (error) {
     console.error('❌ App initialization failed:', error);

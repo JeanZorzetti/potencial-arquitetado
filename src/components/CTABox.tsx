@@ -18,15 +18,49 @@ const CTABox = ({
   variant = "newsletter"
 }: CTABoxProps) => {
   const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      toast({
-        title: "Excelente escolha!",
-        description: "Você receberá conteúdos exclusivos em breve. Prepare-se para acelerar sua carreira!",
+    if (!email) return;
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/newsletter/subscribe`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
       });
-      setEmail("");
+
+      if (response.ok) {
+        toast({
+          title: "Excelente escolha!",
+          description: "Você receberá conteúdos exclusivos em breve. Prepare-se para acelerar sua carreira!",
+        });
+        setEmail("");
+      } else {
+        const errorData = await response.json();
+        if (response.status === 400 && errorData.error?.includes('já está inscrito')) {
+          toast({
+            title: "E-mail já cadastrado",
+            description: "Este e-mail já está inscrito na nossa newsletter.",
+            variant: "destructive",
+          });
+        } else {
+          throw new Error(errorData.error || 'Erro desconhecido');
+        }
+      }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      toast({
+        title: "Erro na inscrição",
+        description: "Não foi possível realizar a inscrição. Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -57,8 +91,8 @@ const CTABox = ({
           required
           className="flex-1"
         />
-        <Button type="submit" className="sm:px-6">
-          {buttonText}
+        <Button type="submit" className="sm:px-6" disabled={isSubmitting}>
+          {isSubmitting ? "Inscrevendo..." : buttonText}
         </Button>
       </form>
       
