@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://potencial-arquitetado.roilabs.com.br/sitemap.xml
+Sitemap: https://potencialarquitetado.roilabs.com.br/sitemap.xml
