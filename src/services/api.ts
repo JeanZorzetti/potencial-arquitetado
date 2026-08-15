@@ -1,19 +1,17 @@
-import { Article } from "@/data/articles";
+import { Article, articles } from "@/data/articles";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// ponytail: o backend (arquiteturaapi.roilabs.com.br) está NXDOMAIN, então todo fetch daqui
+// falhava e o blog inteiro renderizava vazio com a home em 200. Os mesmos artigos já moram em
+// articles.ts — trocar a API morta por um import é o menor diff que põe o conteúdo no ar.
+// Se o backend voltar, refazer o fetch aqui: as páginas não mudam, a assinatura é a mesma.
+const publicados = articles.filter((a) => a.status === "published");
 
 export async function getArticles(): Promise<Article[]> {
-  const response = await fetch(`${API_URL}/articles`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch articles');
-  }
-  return response.json();
+  return publicados;
 }
 
 export async function getArticle(slug: string): Promise<Article> {
-    const response = await fetch(`${API_URL}/articles/${slug}`);
-    if (!response.ok) {
-        throw new Error('Failed to fetch article');
-    }
-    return response.json();
+  const artigo = publicados.find((a) => a.slug === slug);
+  if (!artigo) throw new Error(`Artigo não encontrado: ${slug}`);
+  return artigo;
 }
