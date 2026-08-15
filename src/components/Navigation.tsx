@@ -29,10 +29,14 @@ const Navigation = () => {
           {/* Logo */}
           <Link 
             to="/" 
-            className="flex-shrink-0 flex items-center gap-2.5 font-sans font-bold text-xl text-foreground hover:text-primary transition-colors"
+            className="flex-shrink-0 flex items-center gap-3 text-foreground hover:text-primary transition-colors"
           >
-            <Logo className="h-8 w-8 text-primary" />
-            Arquitetura do Potencial
+            <Logo className="h-11 w-auto text-primary" />
+            <span className="font-serif font-semibold text-lg leading-[1.02] tracking-tight">
+              Arquitetura
+              <br />
+              do Potencial
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
