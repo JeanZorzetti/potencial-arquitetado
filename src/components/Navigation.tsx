@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Logo from "@/components/Logo";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,8 +29,9 @@ const Navigation = () => {
           {/* Logo */}
           <Link 
             to="/" 
-            className="flex-shrink-0 font-sans font-bold text-xl text-foreground hover:text-primary transition-colors"
+            className="flex-shrink-0 flex items-center gap-2.5 font-sans font-bold text-xl text-foreground hover:text-primary transition-colors"
           >
+            <Logo className="h-8 w-8 text-primary" />
             Arquitetura do Potencial
           </Link>
 
