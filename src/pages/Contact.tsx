@@ -15,15 +15,36 @@ const Contact = () => {
     subject: "",
     message: ""
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.name && formData.email && formData.message) {
+    if (!formData.name || !formData.email || !formData.message) return;
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) throw new Error('Falha ao enviar');
+
       toast({
         title: "Mensagem enviada com sucesso!",
         description: "Retornaremos seu contato em até 24 horas úteis.",
       });
       setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (error) {
+      console.error('Contact form error:', error);
+      toast({
+        title: "Erro ao enviar mensagem",
+        description: "Não foi possível enviar sua mensagem. Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -123,9 +144,9 @@ const Contact = () => {
                       />
                     </div>
                     
-                    <Button type="submit" size="lg" className="w-full">
+                    <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
                       <Send className="w-4 h-4 mr-2" />
-                      Enviar Mensagem
+                      {isSubmitting ? "Enviando..." : "Enviar Mensagem"}
                     </Button>
                   </form>
                 </CardContent>
@@ -145,7 +166,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground">E-mail</h3>
-                      <p className="text-muted-foreground">contato@arquiteturadopotencial.com</p>
+                      <p className="text-muted-foreground">Use o formulário ao lado</p>
                       <p className="text-sm text-muted-foreground">Resposta em até 24h úteis</p>
                     </div>
                   </div>
