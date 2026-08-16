@@ -48,6 +48,25 @@ vale cobrar. Falta escolher o destino (Formspree, Google Form, ou um inbox real)
 `/admin` continua sem host: depende do `backend/`, que não roda em lugar nenhum. Não é caminho
 público, ficou fora do escopo.
 
+## Handoff — 2026-08-16
+
+**Captura resolvida.** Destino: função serverless + Brevo. API key salva só como env var
+`BREVO_API_KEY` na Vercel (production) — não está no repo.
+
+- `api/newsletter.ts` — recebe `{email}`, adiciona à lista Brevo id `3`
+  ("Potencial Arquitetado - Newsletter"), `updateEnabled: true`.
+- `api/contact.ts` — recebe `{name, email, subject, message}`, envia e-mail transacional via Brevo
+  pra `flow.controlx@gmail.com` (único sender verificado na conta), `replyTo` = quem preencheu.
+- `CTABox.tsx` e `Contact.tsx` apontam pros dois endpoints (`/api/newsletter`, `/api/contact`),
+  same-origin, sem `VITE_API_URL`.
+- Testado em produção (`potencialarquitetado.roilabs.com.br`): contato caiu na lista Brevo, e-mail
+  chegou (`delivered` + `opened` no log da Brevo). Contato de teste removido da lista depois.
+- Card de contato removeu o e-mail morto `contato@arquiteturadopotencial.com` (NXDOMAIN), agora
+  aponta pro formulário.
+
+`/admin` continua fora do escopo (depende do `backend/` que não roda).
+
 ## Reavaliar
 
-Meados de setembro/2026, com ~30 dias de GSC sobre conteúdo que de fato renderiza.
+Meados de setembro/2026, com ~30 dias de GSC sobre conteúdo que de fato renderiza, **e agora com
+lista Brevo real pra medir inscrições**.
