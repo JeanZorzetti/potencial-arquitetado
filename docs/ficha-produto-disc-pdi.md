@@ -108,16 +108,16 @@ R$ 97 fica no meio da faixa do relatório e abaixo da devolutiva. Entrega mais q
 
 | Quem | O quê |
 |---|---|
-| Jean | Confirmar 3 suposições (abaixo) |
+| `disc-pdi` | Questionário, perfis e montagem do PDI: feito em 03/10/2026 |
 | `saas-legal` | Checkout e arrependimento de 7 dias, o ajuste grátis, "DISC" genérico contra "DiSC" (marca da Wiley), e não chamar de "teste psicológico" (CFP/SATEPSI) |
 | `seo-geo` | Pré-render das 6 páginas, canonical por rota, JSON-LD, robots e llms.txt |
 | `conversion-copy` | Página de resultado com a oferta do degrau 1 |
 | `ux-writing` + `accessibility` | Interface do teste |
 | Plano (`writing-plans`, sem `.specify/`) | Só do degrau 0. O degrau 1 é manual |
 
-**Perguntas abertas, com a suposição usada:**
+**Decisões do Jean (03/10/2026):**
 
-1. **Onde mora:** suposição de que é em potencialarquitetado.roilabs.com.br, sem marca nova. Se for marca nova, `naming` antes.
-2. **Quem monta o PDI à mão:** suposição de que é o Jean, com um modelo por perfil e cerca de 30 a 45 minutos por PDI ([HIPÓTESE], medir na medição paralela).
-3. **Questionário:** suposição de itens próprios, de escolha forçada, sem copiar instrumento proprietário, e sem prometer validação científica. O perfil diz "descreve comportamento preferido, não mede competência", o que responde o PAA "O DISC é confiável?".
-4. **Meio de pagamento:** suposição de Mercado Pago com Pix (o roihub já lê vendas por `vendas-mercadopago.mjs`).
+1. **Onde mora:** potencialarquitetado.roilabs.com.br, **por enquanto**. Se virar marca nova, `naming` antes.
+2. **Quem monta o PDI:** o Claude com a skill `disc-pdi` (`~/.claude/skills/disc-pdi`), a partir do resultado e do formulário. O tempo de cada PDI vai para `~/Documents/PDI-pedidos/tempo.csv` (hipótese: de 30 a 45 minutos).
+3. **Questionário:** feito pela skill. São 24 blocos de escolha forçada com itens próprios (`references/questionario.md`, versão 1), pontuados por `scripts/pontuar.mjs`.
+4. **Pagamento:** Pix, porque R$ 97 é ticket baixo e de pagamento único. A chave Pix fica no pedido e a confirmação é manual, já que a entrega também é manual. O Mercado Pago só entra se alguém pedir cartão.
