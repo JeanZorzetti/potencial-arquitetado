@@ -3,10 +3,10 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { Mail, Phone, MapPin, Clock, Linkedin, Send } from "lucide-react";
+import { Mail, Send } from "lucide-react";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -167,133 +167,13 @@ const Contact = () => {
                     <div>
                       <h3 className="font-semibold text-foreground">E-mail</h3>
                       <p className="text-muted-foreground">Use o formulário ao lado</p>
-                      <p className="text-sm text-muted-foreground">Resposta em até 24h úteis</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-primary/10 p-3 rounded-full">
-                      <Linkedin className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground">LinkedIn</h3>
-                      <p className="text-muted-foreground">@arquiteturadopotencial</p>
-                      <p className="text-sm text-muted-foreground">Conecte-se para networking</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-primary/10 p-3 rounded-full">
-                      <Clock className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground">Horário de Atendimento</h3>
-                      <p className="text-muted-foreground">Segunda a Sexta: 9h às 18h</p>
-                      <p className="text-sm text-muted-foreground">Horário de Brasília</p>
+                      <p className="text-sm text-muted-foreground">Respondemos no e-mail que você informar</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* FAQ Cards */}
-              <div>
-                <h3 className="text-xl font-sans font-semibold text-foreground mb-4">
-                  Perguntas Frequentes
-                </h3>
-                <div className="space-y-4">
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg">Como funciona a consultoria personalizada?</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground">
-                        Oferecemos sessões de coaching executivo focadas na aplicação 
-                        dos frameworks para sua situação específica de carreira.
-                      </p>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg">Vocês oferecem treinamentos corporativos?</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground">
-                        Sim! Desenvolvemos programas customizados de soft skills e 
-                        liderança para equipes e empresas de todos os tamanhos.
-                      </p>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg">Como posso me tornar um contribuidor?</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground">
-                        Procuramos especialistas para colaborações em conteúdo. 
-                        Entre em contato com sua proposta e portfólio.
-                      </p>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Alternative Contact Methods */}
-      <section className="py-16 bg-card">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-2xl font-sans font-bold text-foreground mb-8">
-            Outras Formas de Se Conectar
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6 text-center">
-                <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Linkedin className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="font-semibold mb-2">LinkedIn</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Siga-nos para insights diários sobre carreira e liderança
-                </p>
-                <Button variant="outline" size="sm">
-                  Seguir no LinkedIn
-                </Button>
-              </CardContent>
-            </Card>
-            
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6 text-center">
-                <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Mail className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="font-semibold mb-2">Newsletter</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Receba frameworks exclusivos toda semana
-                </p>
-                <Button variant="outline" size="sm">
-                  Assinar Newsletter
-                </Button>
-              </CardContent>
-            </Card>
-            
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6 text-center">
-                <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Phone className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="font-semibold mb-2">Consultoria</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Agende uma sessão estratégica personalizada
-                </p>
-                <Button variant="outline" size="sm">
-                  Agendar Consulta
-                </Button>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </section>

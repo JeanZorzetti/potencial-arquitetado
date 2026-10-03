@@ -172,9 +172,9 @@ const Blog = () => {
             </div>
             <div className="space-y-4">
               <div className="bg-card p-4 rounded-lg border border-border">
-                <h3 className="font-sans font-semibold mb-2">📊 Baseado em Dados</h3>
+                <h3 className="font-sans font-semibold mb-2">📚 Autores de Referência</h3>
                 <p className="text-sm text-muted-foreground">
-                  Todos os insights são fundamentados em pesquisas peer-reviewed.
+                  Ideias de Daniel Goleman, Carol Dweck e outros, aplicadas ao trabalho.
                 </p>
               </div>
               <div className="bg-card p-4 rounded-lg border border-border">

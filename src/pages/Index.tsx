@@ -55,10 +55,10 @@ const Index = () => {
               <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <BookOpen className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="text-xl font-sans font-semibold mb-3">Baseado em Ciência</h3>
+              <h3 className="text-xl font-sans font-semibold mb-3">Autores de Referência</h3>
               <p className="text-muted-foreground">
-                Conteúdo fundamentado em pesquisas de Harvard, Stanford e principais 
-                autoridades em desenvolvimento humano.
+                Ideias de autores como Daniel Goleman e Carol Dweck, explicadas
+                para o dia a dia de trabalho.
               </p>
             </div>
             <div className="text-center">
@@ -75,10 +75,9 @@ const Index = () => {
               <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <TrendingUp className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="text-xl font-sans font-semibold mb-3">Resultados Mensuráveis</h3>
+              <h3 className="text-xl font-sans font-semibold mb-3">Gratuito</h3>
               <p className="text-muted-foreground">
-                Métodos comprovados por profissionais que alcançaram posições 
-                de liderança em grandes empresas.
+                Todos os guias abertos, sem cadastro para ler.
               </p>
             </div>
           </div>
@@ -152,17 +151,6 @@ const Index = () => {
               Conheça Mais Sobre Mim
             </Button>
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16">
-        <div className="max-w-4xl mx-auto px-6">
-          <CTABox 
-            title="Acelere Sua Carreira com Frameworks Exclusivos"
-            description="Receba estratégias práticas baseadas em ciência para desenvolver soft skills, inteligência emocional e mentalidade de crescimento. Conteúdo exclusivo que não está disponível no blog."
-            buttonText="Quero Acelerar Minha Carreira"
-          />
         </div>
       </section>
 

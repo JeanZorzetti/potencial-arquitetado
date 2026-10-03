@@ -74,18 +74,18 @@ const Framework = () => {
   const benefits = [
     {
       icon: Clock,
-      title: "Acelera Resultados",
-      description: "Reduz o tempo para atingir maestria em 50% comparado a métodos tradicionais"
+      title: "Passo a Passo",
+      description: "Quatro pilares em sequência, da mentalidade ao ecossistema de suporte"
     },
     {
       icon: Award,
-      title: "Baseado em Ciência",
-      description: "Fundamentado em 30+ anos de pesquisa de Stanford, Harvard e outras instituições"
+      title: "Autores de Referência",
+      description: "Parte de ideias conhecidas, como a mentalidade de crescimento de Carol Dweck"
     },
     {
       icon: CheckCircle,
-      title: "Comprovadamente Eficaz",
-      description: "Testado por 1000+ profissionais que alcançaram posições de liderança"
+      title: "Feito para a Rotina",
+      description: "Prática diária de 30 a 60 minutos, com ajuste toda semana"
     }
   ];
 
@@ -106,16 +106,13 @@ const Framework = () => {
             </span>
           </h1>
           <p className="text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto mb-8">
-            Um sistema científico de 4 pilares para acelerar o desenvolvimento de soft skills, 
-            inteligência emocional e competências de liderança baseado em pesquisas de Stanford e Harvard.
+            Um sistema de 4 pilares para desenvolver soft skills, inteligência emocional
+            e competências de liderança, com prática semanal e revisão de resultados.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="text-lg px-8 py-3" onClick={() => navigate('/contato')}>
               Implementar Framework
               <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-            <Button variant="outline" size="lg" className="text-lg px-8 py-3" onClick={() => window.open('#', '_blank')}>
-              Baixar Guia Completo
             </Button>
           </div>
         </div>
@@ -129,8 +126,8 @@ const Framework = () => {
               Por Que Este Framework Funciona?
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Desenvolvido a partir da análise de 50+ estudos científicos e testado 
-              por mais de 1.000 profissionais em diferentes indústrias.
+              Mentalidade de crescimento, planejamento estratégico, prática deliberada
+              e ecossistema de suporte, nesta ordem.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -279,7 +276,6 @@ const Framework = () => {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm">
-                  <li>• 40% melhoria em competências-chave</li>
                   <li>• Maior clareza sobre próximos passos</li>
                   <li>• Rede de relacionamentos estratégicos</li>
                   <li>• Sistema sustentável de crescimento</li>
@@ -287,18 +283,6 @@ const Framework = () => {
               </CardContent>
             </Card>
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16">
-        <div className="max-w-4xl mx-auto px-6">
-          <CTABox 
-            title="Acelere Sua Carreira com o Framework Completo"
-            description="Receba o guia detalhado de implementação, templates exclusivos e acesso ao programa de mentoria em grupo para implementar o framework com sucesso."
-            buttonText="Quero Acelerar Minha Carreira"
-            variant="framework"
-          />
         </div>
       </section>
 

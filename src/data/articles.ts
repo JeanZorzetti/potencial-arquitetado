@@ -71,7 +71,7 @@ export const articles: Article[] = [
         </blockquote>
       </div>
     `,
-    excerpt: "Aprenda um framework científico de 30 dias para desenvolver inteligência emocional e acelerar sua carreira. Baseado em pesquisas de Harvard e Stanford.",
+    excerpt: "Um plano de 30 dias para desenvolver inteligência emocional no trabalho, a partir do modelo de Daniel Goleman.",
     featuredImage: "/api/placeholder/800/400",
     category: "Inteligência Emocional",
     author: "Especialista em Desenvolvimento Humano",

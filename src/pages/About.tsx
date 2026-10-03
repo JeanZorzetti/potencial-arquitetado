@@ -1,8 +1,9 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import CTABox from "@/components/CTABox";
+import { articles } from "@/data/articles";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { BookOpen, Users, Award, Target } from "lucide-react";
 
 const About = () => {
@@ -21,8 +22,8 @@ const About = () => {
               Sobre a Arquitetura do Potencial
             </h1>
             <p className="text-xl text-muted-foreground leading-relaxed">
-              Uma abordagem científica e prática para acelerar o desenvolvimento 
-              profissional através de frameworks baseados em evidências.
+              Guias práticos para desenvolver soft skills, inteligência emocional
+              e liderança no trabalho.
             </p>
           </div>
         </div>
@@ -37,9 +38,8 @@ const About = () => {
                 Nossa Missão
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                Democratizar o acesso a frameworks científicos de desenvolvimento pessoal, 
-                traduzindo pesquisas complexas de universidades como Harvard e Stanford 
-                em estratégias práticas e acionáveis.
+                Tornar acessíveis ideias de desenvolvimento profissional que costumam ficar
+                presas em livros e treinamentos caros, em passos que cabem na sua semana.
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">
                 Acreditamos que todo profissional ambicioso merece ter acesso às mesmas 
@@ -52,29 +52,29 @@ const About = () => {
                 <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
                   <BookOpen className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="font-sans font-semibold mb-2">50+</h3>
-                <p className="text-sm text-muted-foreground">Estudos Analisados</p>
+                <h3 className="font-sans font-semibold mb-2">{articles.length} guias</h3>
+                <p className="text-sm text-muted-foreground">publicados no blog</p>
               </Card>
               <Card className="text-center p-6">
                 <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Users className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="font-sans font-semibold mb-2">1000+</h3>
-                <p className="text-sm text-muted-foreground">Profissionais Impactados</p>
+                <h3 className="font-sans font-semibold mb-2">Sem cadastro</h3>
+                <p className="text-sm text-muted-foreground">para ler qualquer guia</p>
               </Card>
               <Card className="text-center p-6">
                 <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Award className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="font-sans font-semibold mb-2">15+</h3>
-                <p className="text-sm text-muted-foreground">Anos de Experiência</p>
+                <h3 className="font-sans font-semibold mb-2">Gratuito</h3>
+                <p className="text-sm text-muted-foreground">do primeiro ao último</p>
               </Card>
               <Card className="text-center p-6">
                 <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Target className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="font-sans font-semibold mb-2">95%</h3>
-                <p className="text-sm text-muted-foreground">Taxa de Satisfação</p>
+                <h3 className="font-sans font-semibold mb-2">4 pilares</h3>
+                <p className="text-sm text-muted-foreground">no framework</p>
               </Card>
             </div>
           </div>
@@ -91,10 +91,10 @@ const About = () => {
             <div className="flex items-start space-x-4">
               <Badge variant="secondary" className="mt-1">1</Badge>
               <div>
-                <h3 className="text-xl font-sans font-semibold mb-3">Rigor Científico</h3>
+                <h3 className="text-xl font-sans font-semibold mb-3">Autores de Referência</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Todo conteúdo é baseado em pesquisas peer-reviewed de universidades 
-                  renomadas e institutos de pesquisa reconhecidos internacionalmente.
+                  Os guias partem de autores conhecidos no tema, como Daniel Goleman
+                  e Carol Dweck, e não de opinião solta.
                 </p>
               </div>
             </div>
@@ -123,79 +123,11 @@ const About = () => {
               <div>
                 <h3 className="text-xl font-sans font-semibold mb-3">Foco no Resultado</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Priorizamos estratégias com impacto comprovado na aceleração de 
-                  carreiras e desenvolvimento de liderança.
+                  Priorizamos o que dá para aplicar no trabalho já nesta semana.
                 </p>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Background */}
-      <section className="py-16">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl font-sans font-bold text-foreground mb-8 text-center">
-            Formação e Experiência
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <BookOpen className="w-5 h-5 mr-2 text-primary" />
-                  Formação Acadêmica
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h4 className="font-semibold">MBA em Gestão de Pessoas</h4>
-                  <p className="text-sm text-muted-foreground">Fundação Getúlio Vargas</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold">Especialização em Psicologia Organizacional</h4>
-                  <p className="text-sm text-muted-foreground">Universidade de São Paulo</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold">Certificação em Coaching Executivo</h4>
-                  <p className="text-sm text-muted-foreground">International Coach Federation</p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Award className="w-5 h-5 mr-2 text-primary" />
-                  Experiência Profissional
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h4 className="font-semibold">Diretor de Desenvolvimento Humano</h4>
-                  <p className="text-sm text-muted-foreground">Multinacional de Tecnologia</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold">Consultor Senior em Liderança</h4>
-                  <p className="text-sm text-muted-foreground">BCG - Boston Consulting Group</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold">Coach Executivo</h4>
-                  <p className="text-sm text-muted-foreground">C-Levels Fortune 500</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 bg-muted/30">
-        <div className="max-w-4xl mx-auto px-6">
-          <CTABox 
-            title="Pronto para Aplicar Frameworks Científicos?"
-            description="Junte-se a mais de 1.000 profissionais que já aceleram suas carreiras com nossos frameworks exclusivos baseados em pesquisas de Harvard e Stanford."
-            buttonText="Começar Minha Transformação"
-          />
         </div>
       </section>
 

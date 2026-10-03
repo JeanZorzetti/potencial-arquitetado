@@ -147,7 +147,7 @@ const Article = () => {
           </div>
 
           {/* Share Buttons */}
-          <div className="flex items-center space-x-4 mb-8 pb-8 border-b border-border">
+          <div className="flex flex-wrap items-center gap-4 mb-8 pb-8 border-b border-border">
             <span className="text-sm font-medium text-muted-foreground">
               Compartilhar:
             </span>
@@ -185,14 +185,14 @@ const Article = () => {
           {/* Middle CTA */}
           <div className="my-16">
             <CTABox
-              title="Gostou deste artigo? Acelere sua carreira!"
-              description="Receba frameworks exclusivos e estratégias avançadas que não compartilhamos no blog. Conteúdo premium para profissionais que querem resultados rápidos."
-              buttonText="Quero Conteúdo Exclusivo"
+              title="Gostou deste guia?"
+              description="Receba os próximos por e-mail. Sem spam, e você cancela quando quiser."
+              buttonText="Receber os guias"
             />
           </div>
 
           {/* Share Buttons Bottom */}
-          <div className="flex items-center justify-center space-x-4 my-12 py-8 border-t border-b border-border">
+          <div className="flex flex-wrap items-center justify-center gap-4 my-12 py-8 border-t border-b border-border">
             <span className="text-sm font-medium text-muted-foreground">
               Achou útil? Compartilhe:
             </span>
@@ -245,17 +245,6 @@ const Article = () => {
           </div>
         </section>
       )}
-
-      {/* Final CTA */}
-      <section className="py-16">
-        <div className="max-w-4xl mx-auto px-6">
-          <CTABox
-            title="Pronto para Implementar estes Conceitos?"
-            description="Junte-se a mais de 1.000 profissionais que aplicam nossos frameworks para acelerar suas carreiras. Receba um guia prático para implementar tudo que você aprendeu."
-            buttonText="Quero Acelerar Minha Carreira"
-          />
-        </div>
-      </section>
 
       <Footer />
     </div>

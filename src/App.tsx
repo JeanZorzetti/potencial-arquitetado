@@ -11,6 +11,9 @@ import Article from "./pages/Article";
 import Framework from "./pages/Framework";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import Privacidade from "./pages/Privacidade";
+import Termos from "./pages/Termos";
+import CookieConsent from "@/components/CookieConsent";
 
 // Admin imports
 import ProtectedRoute from "@/components/admin/ProtectedRoute";
@@ -40,6 +43,8 @@ const App = () => (
             <Route path="/blog/:slug" element={<Article />} />
             <Route path="/framework" element={<Framework />} />
             <Route path="/contato" element={<Contact />} />
+            <Route path="/privacidade" element={<Privacidade />} />
+            <Route path="/termos/v1" element={<Termos />} />
             
             {/* Admin Routes */}
             <Route path="/admin/login" element={<Login />} />
@@ -62,6 +67,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        <CookieConsent />
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>

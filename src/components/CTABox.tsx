@@ -12,9 +12,9 @@ interface CTABoxProps {
 }
 
 const CTABox = ({ 
-  title = "Acelere Sua Carreira com Frameworks Práticos",
-  description = "Receba estratégias exclusivas baseadas em ciência para desenvolver soft skills e inteligência emocional.",
-  buttonText = "Quero Acelerar Minha Carreira",
+  title = "Receba os próximos guias",
+  description = "Um e-mail quando sair um guia novo de soft skills, inteligência emocional ou liderança.",
+  buttonText = "Receber os guias",
   variant = "newsletter"
 }: CTABoxProps) => {
   const [email, setEmail] = useState("");
@@ -36,16 +36,16 @@ const CTABox = ({
 
       if (response.ok) {
         toast({
-          title: "Excelente escolha!",
-          description: "Você receberá conteúdos exclusivos em breve. Prepare-se para acelerar sua carreira!",
+          title: "Inscrição feita",
+          description: "Você vai receber um e-mail quando sair um guia novo.",
         });
         setEmail("");
       } else {
         const errorData = await response.json();
         if (response.status === 400 && errorData.error?.includes('já está inscrito')) {
           toast({
-            title: "E-mail já cadastrado",
-            description: "Este e-mail já está inscrito na nossa newsletter.",
+            title: "Este e-mail já está inscrito",
+            description: "Os próximos guias já vão chegar nele.",
             variant: "destructive",
           });
         } else {
@@ -55,8 +55,8 @@ const CTABox = ({
     } catch (error) {
       console.error('Newsletter subscription error:', error);
       toast({
-        title: "Erro na inscrição",
-        description: "Não foi possível realizar a inscrição. Tente novamente mais tarde.",
+        title: "Não deu para inscrever agora",
+        description: "Tente de novo em alguns minutos.",
         variant: "destructive",
       });
     } finally {
@@ -70,7 +70,7 @@ const CTABox = ({
     <div className="cta-box max-w-2xl mx-auto text-center">
       <div className="flex justify-center mb-4">
         <div className="bg-primary/20 p-3 rounded-full">
-          <Icon className="w-6 h-6 text-primary" />
+          <Icon className="w-6 h-6 text-primary" aria-hidden="true" />
         </div>
       </div>
       
@@ -85,6 +85,7 @@ const CTABox = ({
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
         <Input
           type="email"
+          aria-label="Seu e-mail"
           placeholder="Seu melhor e-mail"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -92,12 +93,15 @@ const CTABox = ({
           className="flex-1"
         />
         <Button type="submit" className="sm:px-6" disabled={isSubmitting}>
-          {isSubmitting ? "Inscrevendo..." : buttonText}
+          {isSubmitting ? "Inscrevendo…" : buttonText}
         </Button>
       </form>
       
       <p className="text-xs text-muted-foreground mt-3">
-        Sem spam. Cancele quando quiser. Seus dados estão seguros.
+        Sem spam. Cancele quando quiser.{" "}
+        <a href="/privacidade" className="underline underline-offset-2">
+          Política de Privacidade
+        </a>
       </p>
     </div>
   );
