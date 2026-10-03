@@ -17,6 +17,16 @@ Conferido em 03/10/2026 pela skill `saas-legal`. **Não é parecer.** Mostra a r
 | 6 | Tributo | Depende de quem vende (CPF ou CNPJ) | Não; **contador** |
 | 7 | Identificação no site e termos | **Sim**, antes do 1º Pix | Não |
 
+### Status em 03/10/2026 (commit 20fea2c)
+
+- **0, feito:** saíram do site inteiro os números inventados, as credenciais, a "mentoria em grupo", o "conteúdo exclusivo", o FAQ de coaching e treinamento corporativo, e os botões mortos de LinkedIn, consultoria e "Baixar Guia". **Continua aberto:** o **corpo** dos 6 artigos tem estatísticas sem fonte (ex.: "Harvard Business Review… 58% mais chance"), o que pede revisão editorial à parte.
+- **5, feito:** `/privacidade` v1 publicada. O GA4 só carrega depois de "Aceitar", e o rodapé reabre as preferências. A newsletter do rodapé passou a inscrever de verdade; antes mostrava sucesso sem enviar nada.
+- **7, parcial:**
+  - feito: `/termos/v1` publicada, e o rodapé mostra "Operado por ROI Labs" (de `src/lib/operador.ts`);
+  - **falta:** CPF ou CNPJ e endereço em `OPERADOR`. O link "Termos de Venda" aparece sozinho quando o `documento` for preenchido;
+  - **falta:** o checkbox de aceite, que entra no formulário do pedido junto com o degrau 1.
+- **6:** espera a decisão de vender por CPF ou CNPJ ("depende", segundo o Jean).
+
 ## 0. Prova inventada
 
 - **Regra:**
