@@ -109,7 +109,7 @@ R$ 97 fica no meio da faixa do relatório e abaixo da devolutiva. Entrega mais q
 | Quem | O quê |
 |---|---|
 | `disc-pdi` | Questionário, perfis e montagem do PDI: feito em 03/10/2026 |
-| `saas-legal` | Checkout e arrependimento de 7 dias, o ajuste grátis, "DISC" genérico contra "DiSC" (marca da Wiley), e não chamar de "teste psicológico" (CFP/SATEPSI) |
+| `saas-legal` | Feito em 03/10/2026, em `docs/juridico-disc-pdi.md`. Antes do 1º Pix: tirar a prova inventada, publicar a Política de Privacidade e os Termos v1, pôr a identificação no rodapé, ter o contador definindo CPF ou CNPJ e trocar as senhas do Google e do Brevo. Antes de escalar o SEO: consulta com advogado de marcas, porque "DISC" é registrada pela Inscape/Wiley na classe 41 |
 | `seo-geo` | Pré-render das 6 páginas, canonical por rota, JSON-LD, robots e llms.txt |
 | `conversion-copy` | Página de resultado com a oferta do degrau 1 |
 | `ux-writing` + `accessibility` | Interface do teste |
